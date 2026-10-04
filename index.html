@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Kasir POS</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="sp"></div><div id="ov"></div>
+<header><button id="hb" aria-label="Menu">☰</button><img id="lg" class="hide"><b id="sn">Kasir</b><span class="mu np" style="margin-left:auto" id="clk"></span></header>
+<nav><button data-v="kasir" class="on">🧾 Kasir</button><button data-v="riwayat">📊 Riwayat</button><button data-v="stok">📦 Stok &amp; Resep</button><button data-v="admin">⚙️ Admin &amp; Menu</button></nav>
+<main>
+<div id="warn"></div>
+<section id="v-kasir"><div class="g2">
+<div class="card"><h3>Pilih Menu</h3><div id="menu" class="mg"></div></div>
+<div class="card"><h3>Data Pembeli</h3><input id="cn" placeholder="Nama pembeli"><input id="cw" inputmode="tel" placeholder="No. WhatsApp (08xx / 628xx)">
+<h3>Pesanan</h3><div id="cart"></div><div class="tot"><span>Total</span><b id="tot">Rp0</b></div>
+<h3>Pembayaran</h3><div class="seg"><button id="pCash" class="on" onclick="setPay('Cash')">💵 Cash</button><button id="pQRIS" onclick="setPay('QRIS')">📱 QRIS</button></div>
+<div class="mu" style="font-size:13px">Bukti pembelian / bukti transfer (wajib)</div><input type="file" id="pf" accept="image/*"><img id="pv" class="hide">
+<button class="btn" onclick="ask()">Kirim &amp; Cetak Struk via WhatsApp</button></div></div></section>
+
+<section id="v-riwayat" class="hide"><div class="ph"><h2 id="pn"></h2></div>
+<div class="card"><div class="np" style="display:flex;gap:8px;flex-wrap:wrap"><select id="rp" style="width:auto" onchange="rRiwayat()"><option value="d">Per Hari</option><option value="w">Per Minggu</option><option value="m">Per Bulan</option></select><input type="date" id="rd" style="width:auto" onchange="rRiwayat()"><button class="sm" onclick="window.print()">🖨️ Cetak</button></div>
+<h3 id="rt"></h3><div id="rk" class="kp"></div><div id="ri"></div></div>
+<div class="g3"><div class="card"><h3>Terjual hari ini</h3><div id="sd"></div></div><div class="card"><h3>Terjual bulan ini</h3><div id="sm"></div></div></div>
+<div class="card"><h3>Riwayat Pelanggan</h3><div id="rc"></div></div></section>
+
+<section id="v-stok" class="hide"><div class="card"><h3>Tambah Bahan Stok</h3>
+<div class="g3"><input id="sa" placeholder="Nama bahan (mis. Biji kopi)"><input id="sb" placeholder="Satuan (gram, ml, pcs)"><input id="sc" type="number" placeholder="Harga beli (Rp)"><input id="sdq" type="number" placeholder="Kuantitas yang dibeli (mis. 1000)"><input id="se" type="number" placeholder="Stok minimal (peringatan)"></div>
+<button class="btn" onclick="addStock()">Simpan Bahan</button></div>
+<div class="card"><h3>Daftar Stok</h3><div class="wrap" id="sl"></div></div>
+<div class="card"><h3>Resep Menu</h3><div class="mu" style="font-size:13px;margin-bottom:8px">Bahan yang terpakai untuk 1 porsi menu. Menu otomatis tidak bisa dijual bila salah satu bahan habis.</div><div id="rcp"></div></div></section>
+
+<section id="v-admin" class="hide"><div class="g3">
+<div class="card"><h3>Identitas Kasir</h3><input id="an" placeholder="Nama toko" onchange="S.set.name=this.value;save();hdr()"><div class="mu" style="font-size:13px">Logo</div><input type="file" id="al" accept="image/*"><button class="sm" onclick="S.set.logo='';save();hdr()">Hapus logo</button></div>
+<div class="card"><h3>Tambah Menu</h3><input id="mn" placeholder="Nama menu"><input id="mp" type="number" placeholder="Harga jual (Rp)"><button class="btn" onclick="addMenu()">Tambah Menu</button></div></div>
+<div class="card"><h3>Daftar Menu</h3><div id="ml"></div></div>
+<div class="card"><h3>Pergerakan Pasar per Jam</h3><input type="date" id="cd" style="width:auto" onchange="rChart()"><div id="cs"></div><div class="wrap" id="cc"></div><div id="ct"></div></div>
+<div class="card" id="gs-card"><h3>☁️ Sinkron Google Sheets</h3>
+<input id="gsu" placeholder="URL Web App (https://script.google.com/macros/s/.../exec)">
+<input id="gst" type="password" placeholder="Token / kata sandi (sama dengan di Code.gs)">
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input type="checkbox" id="gsa" style="width:auto;margin:0"> Sinkron otomatis setiap ada perubahan</label>
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="gsi" style="width:auto;margin:0"> Simpan foto bukti &amp; nota JPG ke Google Drive</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sm" id="gsb1">Simpan &amp; tes koneksi</button><button class="sm" id="gsb2">⬆ Kirim semua data</button><button class="sm" id="gsb3">⬇ Ambil dari Sheet</button></div>
+<div id="gss" class="mu" style="font-size:14px;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--bd)"></div></div>
+</section>
+</main>
+<div id="md"><div id="mb"></div></div><div id="ts"></div>
+<script src="app.js"></script>
+<script src="sheets.js"></script>
+<script>addEventListener('load',()=>setTimeout(()=>{if(!window.__gs){const e=document.getElementById('gss');if(e){e.className='bad';e.textContent='⚠ sheets.js tidak termuat. Pastikan file sheets.js ada di folder yang SAMA dengan index.html, lalu muat ulang (Ctrl+Shift+R).'}}},500))</script>
+</body></html>
